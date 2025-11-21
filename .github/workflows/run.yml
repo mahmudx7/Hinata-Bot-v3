@@ -1,28 +1,119 @@
-
-name: Node.js CI
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  build:
-
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [20.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm install
-    - run: npm start
+[
+	{
+		"key": "dbln",
+		"value": "%7B%22100069212061167%22%3A%22TNbjdPfX%22%7D",
+		"domain": "facebook.com",
+		"path": "/login/device-based/",
+		"hostOnly": false,
+		"creation": "2025-11-21T06:07:42.794Z",
+		"lastAccessed": "2025-11-21T06:07:42.795Z"
+	},
+	{
+		"key": "datr",
+		"value": "w_wfaRmOsdlct8IjMlxm-UYw",
+		"domain": "facebook.com",
+		"path": "/",
+		"hostOnly": false,
+		"creation": "2025-11-21T06:07:42.795Z",
+		"lastAccessed": "2025-11-21T06:07:42.795Z"
+	},
+	{
+		"key": "sb",
+		"value": "w_wfaSe6JlSafjmWVSd9XdKH",
+		"domain": "facebook.com",
+		"path": "/",
+		"hostOnly": false,
+		"creation": "2025-11-21T06:07:42.795Z",
+		"lastAccessed": "2025-11-21T06:07:42.795Z"
+	},
+	{
+		"key": "ps_l",
+		"value": "1",
+		"domain": "facebook.com",
+		"path": "/",
+		"hostOnly": false,
+		"creation": "2025-11-21T06:07:42.795Z",
+		"lastAccessed": "2025-11-21T06:07:42.795Z"
+	},
+	{
+		"key": "ps_n",
+		"value": "1",
+		"domain": "facebook.com",
+		"path": "/",
+		"hostOnly": false,
+		"creation": "2025-11-21T06:07:42.795Z",
+		"lastAccessed": "2025-11-21T06:07:42.795Z"
+	},
+	{
+		"key": "m_pixel_ratio",
+		"value": "3.2983407974243164",
+		"domain": "facebook.com",
+		"path": "/",
+		"hostOnly": false,
+		"creation": "2025-11-21T06:07:42.795Z",
+		"lastAccessed": "2025-11-21T06:07:42.795Z"
+	},
+	{
+		"key": "dpr",
+		"value": "3.2983407974243164",
+		"domain": "facebook.com",
+		"path": "/",
+		"hostOnly": false,
+		"creation": "2025-11-21T06:07:42.795Z",
+		"lastAccessed": "2025-11-21T06:07:42.795Z"
+	},
+	{
+		"key": "c_user",
+		"value": "100069212061167",
+		"domain": "facebook.com",
+		"path": "/",
+		"hostOnly": false,
+		"creation": "2025-11-21T06:07:42.795Z",
+		"lastAccessed": "2025-11-21T06:07:42.795Z"
+	},
+	{
+		"key": "fr",
+		"value": "1mOKCdoZUpjucuAQh.AWdjU3_4l0WcXupDEO720pjGAKPEcGTNujPwLWr6jSaA44Ifgt8.BpH_1I..AAA.0.0.BpH_1I.AWdVt6YzyStfu16lSxAXERjlbRo",
+		"domain": "facebook.com",
+		"path": "/",
+		"hostOnly": false,
+		"creation": "2025-11-21T06:07:42.795Z",
+		"lastAccessed": "2025-11-21T06:07:42.795Z"
+	},
+	{
+		"key": "xs",
+		"value": "1%3AHZZ7GVzGs0IsdQ%3A2%3A1763704133%3A-1%3A-1%3A%3AAczEyKskcjxD8wP024mymKzxupKjzCkm7JCebUAoEQ",
+		"domain": "facebook.com",
+		"path": "/",
+		"hostOnly": false,
+		"creation": "2025-11-21T06:07:42.795Z",
+		"lastAccessed": "2025-11-21T06:07:42.795Z"
+	},
+	{
+		"key": "x-referer",
+		"value": "eyJyIjoiL3Byb2ZpbGUucGhwP2lkPTEwMDA2OTIxMjA2MTE2NyIsImgiOiIvcHJvZmlsZS5waHA%2FaWQ9MTAwMDY5MjEyMDYxMTY3IiwicyI6Im0ifQ%3D%3D",
+		"domain": "facebook.com",
+		"path": "/",
+		"hostOnly": false,
+		"creation": "2025-11-21T06:07:42.795Z",
+		"lastAccessed": "2025-11-21T06:07:42.795Z"
+	},
+	{
+		"key": "wd",
+		"value": "891x1703",
+		"domain": "facebook.com",
+		"path": "/",
+		"hostOnly": false,
+		"creation": "2025-11-21T06:07:42.795Z",
+		"lastAccessed": "2025-11-21T06:07:42.795Z"
+	},
+	{
+		"key": "presence",
+		"value": "C%7B%22t3%22%3A%5B%5D%2C%22utc3%22%3A1763704151753%2C%22v%22%3A1%7D",
+		"domain": "facebook.com",
+		"path": "/",
+		"hostOnly": false,
+		"creation": "2025-11-21T06:07:42.795Z",
+		"lastAccessed": "2025-11-21T06:07:42.795Z"
+	}
+]
