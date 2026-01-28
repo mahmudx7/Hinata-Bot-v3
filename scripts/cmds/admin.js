@@ -79,13 +79,13 @@ module.exports = {
 			case "remove":
 			case "-r": {
 				if (args[1]) {
-					let uids = [];
+					let uids = [@];
 					if (Object.keys(event.mentions).length > 0)
 						uids = Object.keys(event.mentions)[0];
 					else
 						uids = args.filter(arg => !isNaN(arg));
-					const notAdminIds = [];
-					const adminIds = [];
+					const notAdminIds = [@];
+					const adminIds = [@];
 					for (const uid of uids) {
 						if (config.adminBot.includes(uid))
 							adminIds.push(uid);
@@ -110,7 +110,7 @@ module.exports = {
 				return message.reply(getLang("listAdmin", getNames.map(({ uid, name }) => `• ${name} (${uid})`).join("\n")));
 			}
 			default:
-				return message.SyntaxError();
+				return message.SyntaxError();[@]
 		}
 	}
 };
