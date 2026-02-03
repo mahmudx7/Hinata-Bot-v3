@@ -13,7 +13,7 @@ module.exports = {
     author: "MahMUD",
     countDown: 5,
     role: 0,
-    category: "islamic",
+    category: "Islamic",
     shortDescription: {
       en: "Random Bangla Hadis"
     },
