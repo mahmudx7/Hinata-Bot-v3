@@ -3,94 +3,106 @@ const fs = require("fs-extra");
 const path = require("path");
 
 const mahmhd = async () => {
-  const base = await axios.get("https://raw.githubusercontent.com/mahmudx7/HINATA/main/baseApiUrl.json");
-  return base.data.mahmud;
+        const base = await axios.get("https://raw.githubusercontent.com/mahmudx7/HINATA/main/baseApiUrl.json");
+        return base.data.mahmud;
 };
 
 module.exports = {
-  config: {
-    name: "write",
-    aliases: ["wr"],
-    version: "1.7",
-    author: "MahMUD",
-    countDown: 5,
-    role: 0,
-    category: "image",
-    shortDescription: { en: "Write text on a replied image using remote API" },
-    guide: { en: "{p}write [color] - <text>\nReply to an image to use this command.\nUse '{p}write list' to see available colors." }
-  },
+        config: {
+                name: "write",
+                aliases: ["wr", "লিখুন"],
+                version: "1.7",
+                author: "MahMUD",
+                countDown: 5,
+                role: 0,
+                description: {
+                        bn: "ছবির ওপর রঙিন টেক্সট লিখুন",
+                        en: "Write colored text on a replied image"
+                },
+                category: "image",
+                guide: {
+                        bn: '   {pn} <color_code> - <text>: ছবির রিপ্লাইয়ে লিখুন'
+                                + '\n   {pn} list: কালার কোডগুলোর লিস্ট দেখুন'
+                                + '\n   উদাহরণ: {pn} r - Hello Baby',
+                        en: '   {pn} <color_code> - <text>: Reply to an image'
+                                + '\n   {pn} list: See available color codes'
+                                + '\n   Example: {pn} r - Hello Baby'
+                }
+        },
 
-  onStart: async function ({ api, event, args }) {
-    const { threadID, messageID } = event;    
-    const obfuscatedAuthor = String.fromCharCode(77, 97, 104, 77, 85, 68);
-    if (module.exports.config.author !== obfuscatedAuthor) {
-      return api.sendMessage(
-        "❌ | You are not authorized to use this command.",
-        threadID,
-        messageID
-      );
-    }
+        langs: {
+                bn: {
+                        colorList: "🎨 সহজ কালার কোডসমূহ:\n%1\n\nকিছু না দিলে ডিফল্ট 'white' হবে।",
+                        noReply: "× বেবি, একটি ছবিতে রিপ্লাই দিয়ে কমান্ডটি ব্যবহার করো!",
+                        noText: "× ছবিতে কি লিখবো সেটা তো বলো! (যেমন: r - text)",
+                        apiError: "⚠️ | রিমোট এপিআই এই মুহূর্তে বন্ধ আছে।",
+                        error: "× টেক্সট লিখতে সমস্যা হয়েছে: %1। প্রয়োজনে Contact MahMUD।"
+                },
+                en: {
+                        colorList: "🎨 Available short codes:\n%1\n\nDefault is white if not specified.",
+                        noReply: "× Baby, please reply to an image first!",
+                        noText: "× Please provide text to write! (Example: r - text)",
+                        apiError: "⚠️ | Remote API unavailable — try again later.",
+                        error: "× Failed to write text: %1. Contact MahMUD for help."
+                }
+        },
 
-    const colorMap = {
-      b: "black",
-      w: "white",
-      r: "red",
-      bl: "blue",
-      g: "green",
-      y: "yellow",
-      o: "orange",
-      p: "purple",
-      pk: "pink"
-    };
+        onStart: async function ({ api, event, args, message, getLang }) {
+                const authorName = String.fromCharCode(77, 97, 104, 77, 85, 68);
+                if (this.config.author !== authorName) {
+                        return api.sendMessage("You are not authorized to change the author name.", event.threadID, event.messageID);
+                }
 
-    if (args[0]?.toLowerCase() === "list") {
-      return api.sendMessage(
-        `🎨 Available colors:\n${Object.entries(colorMap)
-          .map(([short, full]) => `${short} → ${full}`)
-          .join("\n")}\n\nDefault is white if not specified.`,
-        threadID,
-        messageID
-      );
-    }
+                const colorMap = {
+                        b: "black", w: "white", r: "red", bl: "blue",
+                        g: "green", y: "yellow", o: "orange", p: "purple", pk: "pink"
+                };
 
-    if (!event.messageReply || !event.messageReply.attachments || !event.messageReply.attachments[0].url) {
-      return api.sendMessage("Please reply to an image.", threadID, messageID);
-    }
+                if (args[0]?.toLowerCase() === "list") {
+                        const list = Object.entries(colorMap).map(([s, f]) => `${s} → ${f}`).join("\n");
+                        return message.reply(getLang("colorList", list));
+                }
 
-    const imageUrl = event.messageReply.attachments[0].url;
-    let input = args.join(" ").trim();
-    let color = "white";
-    let text = input;
+                if (!event.messageReply || !event.messageReply.attachments || !event.messageReply.attachments[0].url) {
+                        return message.reply(getLang("noReply"));
+                }
 
-    if (input.includes(" - ")) {
-      [color, text] = input.split(" - ").map(i => i.trim());
-      color = colorMap[color.toLowerCase()] || "white";
-    }
+                let input = args.join(" ").trim();
+                let color = "white";
+                let text = input;
 
-    if (!text) return api.sendMessage("Please provide text to write.", threadID, messageID);
+                if (input.includes(" - ")) {
+                        const parts = input.split(" - ");
+                        color = colorMap[parts[0].trim().toLowerCase()] || parts[0].trim();
+                        text = parts.slice(1).join(" - ").trim();
+                }
 
-    const cacheDir = path.join(__dirname, "cache");
-    await fs.ensureDir(cacheDir);
-    const tempPath = path.join(cacheDir, `write_${Date.now()}.png`);
+                if (!text) return message.reply(getLang("noText"));
 
-    try {
-      const baseApi = await mahmhd();
-      if (!baseApi) return api.sendMessage("⚠️ | Remote API unavailable — try again later.", threadID, messageID);
+                const imageUrl = event.messageReply.attachments[0].url;
+                const cacheDir = path.join(__dirname, "cache");
+                const tempPath = path.join(cacheDir, `write_${Date.now()}.png`);
 
-      const apiUrl = `${baseApi}/api/write?imageUrl=${encodeURIComponent(imageUrl)}&text=${encodeURIComponent(text)}&color=${encodeURIComponent(color)}`;
-      const response = await axios.get(apiUrl, { responseType: "arraybuffer", timeout: 20000 });
+                try {
+                        await fs.ensureDir(cacheDir);
+                        const baseApi = await mahmhd();
+                        if (!baseApi) return message.reply(getLang("apiError"));
 
-      await fs.writeFile(tempPath, Buffer.from(response.data));
+                        const apiUrl = `${baseApi}/api/write?imageUrl=${encodeURIComponent(imageUrl)}&text=${encodeURIComponent(text)}&color=${encodeURIComponent(color)}`;
+                        const response = await axios.get(apiUrl, { responseType: "arraybuffer", timeout: 20000 });
 
-      await api.sendMessage(
-        { attachment: fs.createReadStream(tempPath) },
-        threadID,
-        () => { try { fs.existsSync(tempPath) && fs.unlinkSync(tempPath); } catch {} },
-        messageID
-      );
-    } catch {
-      try { fs.existsSync(tempPath) && fs.unlinkSync(tempPath); } catch {}
-      api.sendMessage("🥹error, contact MahMUD", threadID, messageID);
-    }
-  }
+                        await fs.writeFile(tempPath, Buffer.from(response.data));
+
+                        return message.reply({
+                                attachment: fs.createReadStream(tempPath)
+                        }, () => {
+                                if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
+                        });
+
+                } catch (err) {
+                        console.error("Write command error:", err);
+                        if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
+                        return message.reply(getLang("error", err.message));
+                }
+        }
 };
